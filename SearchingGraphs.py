@@ -5,31 +5,6 @@ import random
 from pq import PQ
 import timeit
 
-# Programming Assignment 3
-# (5) After doing steps 1 through 4 below (look for relevant comments), return up here.
-#     Given the output of step 4, how do the 2 versions of Dijkstra's algorithm compare?
-#     How does graph density affect performance?  Does size of the graph otherwise affect performance?
-#     Any other observations?
-#
-#
-#Version 1 is always running faster than version 2.  The more dense the graph is (meaning the more edges there are),
-#the farther apart the two times will be.  If the graph has the same number of vertices but less edges,
-#than Version 2 will run at a time closer to version 1
-#Alos, the more dense the graph is, the longer the run time will be for a particular version.  For example, version 1
-#will run much quicker on a graph that has less edges, as appose to a graph with a high amount of edges
-#this is consistant with the test cases provided.  In conclusion, version 1 always runs faster than version 2,
-#but when the graph is dense, version 2 will be farther apart from version 1's time
-
-# Programming Assignment 3
-# (1) Implement this function, which should:
-#    -- Generate a random weighted directed graph with v vertices and e different edges.
-#    -- Start by generating a list of random edges (assume vertices numbered from 0 to v-1).
-#       In this list, each edge is a 2-tuple, e.g., (2, 3) is an edge from vertex 2 to vertex 3.
-#    -- Next, generate a list, the same length, of random weights, with minW and maxW specifying the
-#       range of weights.
-#    -- Then construct a Digraph object passing your lists above as parameters.  The Digraph class extends
-#       Graph so actually has the same __init__ parameters as its parent class.
-#    -- return that Digraph object
 def generateRandomWeightedDigraph(v,e,minW,maxW) :
     edges = list()
     weights = list()
@@ -50,26 +25,6 @@ def generateRandomWeightedDigraph(v,e,minW,maxW) :
     WDigraph = Digraph(v, edges, weights)
     return WDigraph
     
-# Programming Assignment 3
-#
-# (4) Make sure you find steps 2 and 3 later in this module (down in the DiGraph class) then
-#     return up here to finish assignment.
-#     Implement the following function to do the following:
-#     -- Use your function from step (1) generate a random weighted directed graph with 16 vertices and 240 edges
-#        (i.e., completely connected--all possible directed edges) and weights random in interval 1 to 10 inclusive.
-#     -- Read documentation of timeit (https://docs.python.org/3/library/timeit.html)
-#     -- Use timeit to time both versions of Dijkstra that you implemented in steps 2 and 3 on this graph.  The number parameter
-#        to timeit controls how many times the thing you're timing is called.  To get meaningful times, you will need to experiment with this
-#        a bit.  E.g., increase it if the times are too small.  Use the same value of number for timing both algorithms.
-#     -- Now repeat this for a digraph with 64 vertices and 4032 edges.
-#     -- Now repeat for 16 vertices and 60 edges.
-#     -- Now repeat for 64 vertices and 672 edges.
-#     -- Repeat this again for 16 vertices and 32 edges.
-#     -- Repeat yet again with 64 vertices and 128 edges.
-#    
-#     -- Have this function output the timing data in a table, with columns for number of vertices, number of edges, and time.
-#     -- If you want, you can include larger digraphs.  The pattern I used when indicating what size to use: Dense graphs: v, e=v*(v-1),
-#        Sparse: v, e=2*v, and Something in the middle: v, e=v*(v-1)/lg V.
 def timeShortestPathAlgs() :
     def alg1 ():
         times = timeit.timeit(lambda: G.DijkstrasVersion1(0), number = 1000)
@@ -280,16 +235,6 @@ class Digraph(Graph) :
                     L.append((u,v))
         return L
 
-    # Programminf Assignment 3:
-    # 2) Implement Dijkstra's Algorithm using a simple list as the "priority queue" as described in paragraph
-    #    that starts at bottom of page 661 and continues on 662 (also described in class).
-    #
-    #    Have this method return a list of 3-tuples, one for each vertex, such that first position is vertex id,
-    #    second is distance from source vertex (i.e., what pseudocode from textbook refers to as v.d), and third
-    #    is the vertex's parent (what the textbook refers to as v.pi).  E.g., (2, 10, 5) would mean the shortest path
-    #    from s to 2 has weight 10, and vertex 2's parent is vertex 5.
-    #
-    #    the parameter s is the source vertex.
     def DijkstrasVersion1(self,s) :
         class VertexData:
             pass
@@ -321,17 +266,6 @@ class Digraph(Graph) :
                     vList[v].prev = u
         return S
 
-    # Programminf Assignment 3:
-    # 3) Implement Dijkstra's Algorithm using a binary heap implementation of a PQ as the PQ.
-    #    Specifically, use the implementation I have posted here: https://github.com/cicirello/PythonDataStructuresLibrary
-    #    Use the download link (if you simply click pq.py Github will just show you the source in a web browser with line numbers).
-    #
-    #    Have this method return a list of 3-tuples, one for each vertex, such that first position is vertex id,
-    #    second is distance from source vertex (i.e., what pseudocode from textbook refers to as v.d), and third
-    #    is the vertex's parent (what the textbook refers to as v.pi).  E.g., (2, 10, 5) would mean the shortest path
-    #    from s to 2 has weight 10, and vertex 2's parent is vertex 5.
-    #
-    #    the parameter s is the source vertex.
     def DijkstrasVersion2(self,s) :
         class VertexData:
             pass
@@ -356,25 +290,6 @@ class Digraph(Graph) :
                     Q.change_priority(v, temp)
         return S
     
-    # Topological Sort of the directed graph (Section 22.4 from textbook).
-    # Returns the topological sort as a list of vertex indices.
-    #
-    #       Homework Hints/Suggestions/Etc:
-    #           1) Textbook indicates to use a Linked List.  Python doesn't have
-    #               one in the standard library.  Instead, use a deque (don't simply use
-    #               a python list since adding at the front is O(N) for a python list,
-    #               while it is O(1) for a deque).
-    #           2) From the pseudocode, you will be tempted to (a) call DFS, and then (b) sort
-    #               vertices by the finishing times.  However, don't do that since the sort will
-    #               cost O(V lg V) unnecessarily.
-    #           3) So, how do you do it without sorting?
-    #               A) Option A: Start by copying and pasting DFS code to start of topologicalSort, and
-    #                   where finishing time is set, add the vertex index to front of list.
-    #               B) Option B: Add an optional parameter to DFS method that is a
-    #                   function that is called upon finishing a vertex.
-    #                   Give it a default that does nothing (i.e., just a pass). Your topologicalSort would then
-    #                   call DFS passing a function that adds the vertex index to the front of a list.
-    #               C) Option C: any other way you can come up with that doesn't change what DFS currently does logically 
     def topologicalSort(self) :
         L = deque()
         class VertexData :
@@ -403,7 +318,7 @@ class Digraph(Graph) :
                 visit(self,u)
         return L
 
-    # Computes the transpose of a directed graph. (See textbook page 616 for description of transpose).
+    # Computes the transpose of a directed graph.
     # Does not alter the self object.  Returns a new Digraph that is the transpose of self.
     def transpose(self) :
         tranL = []
@@ -415,21 +330,6 @@ class Digraph(Graph) :
         dGraph.printGraph()
         return dGraph
 
-    # Computes the strongly connected components of a digraph.
-    # Returns a list of lists, containing one list for each strongly connected component, which is simply
-    # a list of the vertices in that component.
-    #
-    #       Homework Hints/Suggestions/Etc: See algorithm on page 617.
-    #           1) Take a look at steps 1 and 2 before you do anything.  Notice that Step 1 computes finishing times with DFS,
-    #               and step 3 uses vertices in order of decreasing finishing times.  As in the topological sort, don't actually sort
-    #               by finishing time (to avoid O(V lg v) step).  However, this is easier than in the topological sort as you already
-    #               have a method that will get you what you need.  For step 1 of algorithm you can simply call your topological sort.
-    #               That will give you the vertices in decreasing order by finishing time, which is really the intention of line 1.
-    #           2) Line 2 is just the transpose and you implemented a method to compute this above.
-    #           3) The DFS in line 3 can be done in a couple ways.  As above, if you change DFS, make sure it will still function in the basic
-    #               version.  The simplest way to do that would be to leave it alone, and just start by copying and pasting the code.
-    #               You'll need to then alter it to have the outer loop use the vertex ordering obtained from algorithm line 1 (to implement line 3).
-    #               And to do line 4, you'll need to further alter it to generate the list of lists for the return value.
     def stronglyConnectedComponents(self) :
         tranSelf = self.transpose()
         tempL = []
@@ -462,10 +362,6 @@ class Digraph(Graph) :
                 tempL = []
         print("\nWorking....\nWorking....\n")
         return L
-
-# Implement any code necessary to test your topological sort, transpose, and strongly connected components methods.
-#  E.g., construct graphs for the tests, figure out what the results should be, use your methods, write any code necessary to
-#  output results, and check if your algorithms worked correctly.
 
 G = Graph(7, [(0,5),(0,1),(1,3),(5,2),(5,3),(5,4),(3,6)])
 H = Digraph(7, [(5,0),(0,1),(1,3),(2,5),(3,5),(5,4),(3,6)])
